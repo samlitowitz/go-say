@@ -1,0 +1,30 @@
+FROM golang:1.18 AS test-debug
+# Install git.
+# Git is required for fetching the dependencies.
+RUN apt-get update && apt-get install -y git
+
+WORKDIR $GOPATH/src/github.com/samlitowitz/go-say
+COPY . .
+
+# Fetch dependencies.
+# Using go mod.
+ENV GO111MODULE=on
+RUN go mod download
+RUN go mod verify
+
+# Build the binary.
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -gcflags="all=-N -l" -o /go/bin/go-say cmd/go-say/*.go
+
+RUN cp /go/bin/go-say /usr/local/bin/go-say \
+  && mkdir -p /tmp/test/expected \
+  && cp /go/src/github.com/samlitowitz/go-say/assets/fixtures/*.txt /tmp/test/expected \
+  && mkdir -p /usr/local/share/cows \
+  && cp -r /go/src/github.com/samlitowitz/go-say/assets/templates/* /usr/local/share/cows
+
+# Install delver
+RUN go install github.com/go-delve/delve/cmd/dlv@latest \
+  && cp /go/bin/dlv /usr/local/bin/dlv
+
+EXPOSE 8000 40000
+
+CMD ["dlv", "--listen=:40000", "--headless=true", "--api-version=2", "--accept-multiclient", "exec", "-r", "stdin:/tmp/test/expected/input-2.txt", "/usr/local/bin/go-say", "--", "-f", "small.cow"]

@@ -1,0 +1,28 @@
+services:
+    copy-templates:
+        image: docker/whalesay
+        command: ["/app/scripts/copy-templates.sh"]
+        user: "${DOCKER_USER}"
+        volumes:
+            - ./:/app
+
+    generate-fixtures:
+        image: docker/whalesay
+        command: [ "/app/scripts/generate-fixtures.sh" ]
+        user: "${DOCKER_USER}"
+        volumes:
+            - ./:/app
+
+    test:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: test
+        command: ["/app/test.sh"]
+
+    test-debug:
+        build:
+            context: .
+            dockerfile: Dockerfile-debug
+            target: test-debug
+        network_mode: "host"
