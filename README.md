@@ -1,7 +1,7 @@
 # Go Say
 [![Go Report Card](https://goreportcard.com/badge/github.com/samlitowitz/go-say)](https://goreportcard.com/report/github.com/samlitowitz/go-say)
 
-`go-say` is a `cowsay` clone in Go.
+`go-say` is a `cowsay` clone in Go. Based on Tony Monroe's source found [here](https://github.com/moxiegirl/cowsay).
 
 # Installation
 `go get -u github.com/samlitowitz/go-say/cmd/go-say`

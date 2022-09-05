@@ -16,7 +16,6 @@ func PrintBalloon(w io.Writer, opts *cowsay.Options, message string) error {
 		processedMessages = append(processedMessages, strings.Split(strings.TrimSpace(formatMessage(message, opts.WrapWidth)), "\n")...)
 	}
 
-	//https://raw.githubusercontent.com/moxiegirl/cowsay/master/cowsay
 	maxMessageLength := -1
 	for _, processedMessage := range processedMessages {
 		if len(processedMessage) > maxMessageLength {
